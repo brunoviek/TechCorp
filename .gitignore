@@ -1,0 +1,27 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# Prisma
+prisma/dev.db
+prisma/*.sqlite
+prisma/migrations/*/README.md
+
+# VSCode
+.vscode/
+
+# Docker
+pgdata/
+docker-volume/
+*.pid
+
+# OS files
+.DS_Store
+Thumbs.db
