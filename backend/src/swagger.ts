@@ -1,5 +1,6 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import path from 'path';
 
 const options = {
   definition: {
@@ -9,7 +10,9 @@ const options = {
       version: '1.0.0',
     },
   },
-  apis: ['./src/modules/**/*.ts'],
+  apis: [
+    path.join(__dirname, 'docs/*.yaml')
+  ],
 };
 
 export const swaggerSpec = swaggerJSDoc(options);

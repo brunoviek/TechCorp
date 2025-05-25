@@ -1,28 +1,36 @@
-import express, { Request, Response, NextFunction } from 'express';
-import userRoutes from './modules/user/presentation/routes';
-import "reflect-metadata";
+import express from 'express';
+import 'reflect-metadata';
+import userRoutes from './modules/user/presentation/user.routes';
 import { swaggerUi, swaggerSpec } from './swagger';
+import { responseMiddleware } from './shared/infra/middlewares/responseMiddleware';
+import { requestLogger } from './shared/infra/middlewares/requestLogger';
+import { errorHandler } from './shared/infra/middlewares/errorHandler';
 
 const app = express();
+
 app.use(express.json());
 
-// Swagger endpoint
+// Log de requisições
+app.use(requestLogger);
+
+// Middleware para formatar as respostas
+app.use(responseMiddleware);
+
+// Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// User routes
+// Rotas
 app.use('/api', userRoutes);
 
-// Middleware de tratamento de erros
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err);
-  res.status(500).json({ error: 'Internal Server Error.' });
-});
+// Middleware global de tratamento de erros (sempre por último)
+app.use(errorHandler);
 
+// Process-level error handling
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason) => {
   console.error('Unhandled Rejection:', reason);
 });
 
