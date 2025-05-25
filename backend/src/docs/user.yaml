@@ -1,0 +1,81 @@
+paths:
+  /api/users:
+    post:
+      summary: Cria um novo usuário
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                idade:
+                  type: integer
+              required:
+                - nome
+                - email
+                - idade
+      responses:
+        201:
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Dados inválidos
+    get:
+      summary: Lista usuários com paginação
+      tags:
+        - Usuários
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: false
+          description: Página atual (default 1)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          required: false
+          description: Quantidade por página (default 10)
+      responses:
+        200:
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        email:
+          type: string
+        idade:
+          type: integer
