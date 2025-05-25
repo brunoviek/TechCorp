@@ -65,6 +65,69 @@ paths:
                     type: integer
                   limit:
                     type: integer
+  /api/users/{id}:
+    put:
+      summary: Edita um usuário
+      tags:
+        - Usuários
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                idade:
+                  type: integer
+              required:
+                - nome
+                - email
+                - idade
+      responses:
+        200:
+          description: Usuário editado com sucesso
+    delete:
+      summary: Exclui um usuário
+      tags:
+        - Usuários
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Usuário excluído com sucesso
+    get:
+      summary: Busca um usuário pelo ID
+      tags:
+        - Usuários
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: Usuário não encontrado
 
 components:
   schemas:

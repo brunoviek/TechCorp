@@ -6,6 +6,13 @@ export function responseMiddleware(req: Request, res: Response, next: NextFuncti
     if (data && (data.success === true || data.success === false)) {
       return oldJson.call(this, data);
     }
+    if (data && data.message) {
+      return oldJson.call(this, {
+        success: true,
+        message: data.message,
+        data: { ...data, message: undefined }, 
+      });
+    }
     return oldJson.call(this, {
       success: true,
       data,
