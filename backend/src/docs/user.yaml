@@ -1,3 +1,8 @@
+openapi: 3.0.0
+info:
+  title: API de Usuários
+  version: 1.0.0
+
 paths:
   /api/users:
     post:
@@ -128,6 +133,40 @@ paths:
                 $ref: '#/components/schemas/User'
         404:
           description: Usuário não encontrado
+  /api/users/batch:
+    post:
+      summary: Importa usuários em lote via arquivo CSV
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Arquivo CSV contendo os usuários (nome, email, idade)
+      responses:
+        200:
+          description: Resultado da importação em lote
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  total:
+                    type: integer
+                  successCount:
+                    type: integer
+                  errorCount:
+                    type: integer
+        400:
+          description: Arquivo CSV não enviado ou inválido
 
 components:
   schemas:
