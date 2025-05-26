@@ -7,6 +7,9 @@ import { DeleteUserCommandHandler } from '../application/commands/DeleteUserComm
 import { GetUserByIdQueryHandler } from '../application/queries/GetUserByIdQueryHandler';
 import { body, query } from 'express-validator';
 import { validateRequest } from '../../../shared/infra/middlewares/validateRequest';
+import multer from 'multer';
+import path from 'path';
+import { ImportUsersBatchHandler } from '../application/commands/ImportUsersBatchHandler';
 
 const router = express.Router();
 const createUserHandler = container.get(CreateUserCommandHandler);
@@ -14,6 +17,21 @@ const listUsersHandler = container.get(ListUsersQueryHandler);
 const editUserHandler = container.get(EditUserCommandHandler);
 const deleteUserHandler = container.get(DeleteUserCommandHandler);
 const getUserByIdHandler = container.get(GetUserByIdQueryHandler);
+const importUsersBatchHandler = container.get(ImportUsersBatchHandler);
+const upload = multer({
+  dest: 'uploads/',
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype === 'text/csv' ||
+      file.mimetype === 'application/vnd.ms-excel' ||
+      file.originalname.toLowerCase().endsWith('.csv')
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error('Apenas arquivos CSV são permitidos!'));
+    }
+  },
+});
 
 router.post(
   '/users',
@@ -115,6 +133,37 @@ router.delete(
       await deleteUserHandler.execute(id);
       res.status(204).json({
         message: 'Usuário excluído com sucesso'
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.post(
+  '/users/batch',
+  (req, res, next) => {
+    upload.single('file')(req, res, function (err) {
+      if (err) {
+        if (err.message === 'Apenas arquivos CSV são permitidos!') {
+          return res.status(400).json({ success: false, error: err.message });
+        }
+        return next(err);
+      }
+      next();
+    });
+  },
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.file) {
+        res.status(400).json({ success: false, error: 'Arquivo CSV não enviado' });
+        return;
+      }
+      const filePath = path.resolve(req.file.path);
+      const result = await importUsersBatchHandler.execute(filePath);
+      res.json({
+        success: true,
+        ...result,
       });
     } catch (err) {
       next(err);

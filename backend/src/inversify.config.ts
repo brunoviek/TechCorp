@@ -7,6 +7,7 @@ import { ListUsersQueryHandler } from "./modules/user/application/queries/ListUs
 import { EditUserCommandHandler } from "./modules/user/application/commands/EditUserCommandHandler";
 import { DeleteUserCommandHandler } from "./modules/user/application/commands/DeleteUserCommandHandler";
 import { GetUserByIdQueryHandler } from "./modules/user/application/queries/GetUserByIdQueryHandler";
+import { ImportUsersBatchHandler } from "./modules/user/application/commands/ImportUsersBatchHandler";
 
 const container = new Container();
 
@@ -16,5 +17,6 @@ container.bind<ListUsersQueryHandler>(ListUsersQueryHandler).toSelf();
 container.bind<EditUserCommandHandler>(EditUserCommandHandler).toSelf();
 container.bind<DeleteUserCommandHandler>(DeleteUserCommandHandler).toSelf();
 container.bind<GetUserByIdQueryHandler>(GetUserByIdQueryHandler).toSelf();
+container.bind<ImportUsersBatchHandler>(ImportUsersBatchHandler).toSelf();
 
 export { container };
