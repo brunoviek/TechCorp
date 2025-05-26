@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import 'reflect-metadata';
 import userRoutes from './modules/user/presentation/user.routes';
 import { swaggerUi, swaggerSpec } from './swagger';
@@ -8,6 +9,7 @@ import { errorHandler } from './shared/infra/middlewares/errorHandler';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 // Log de requisições
